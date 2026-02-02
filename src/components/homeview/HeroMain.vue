@@ -1,11 +1,12 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import Facebook from 'vue-material-design-icons/Facebook.vue';
+import Instagram from 'vue-material-design-icons/Instagram.vue';
+import Whatsapp from 'vue-material-design-icons/Whatsapp.vue';
 
 const currentImageIndex = ref(0);
 let intervalId = null;
 
-// Supondo que você tenha 4 imagens na pasta assets/images/hero
-// Nomes: hero1.jpg, hero2.jpg, hero3.jpg, hero4.jpg (ou .png, .webp, etc.)
 const images = [
   new URL('@/assets/images/hero/img1.png', import.meta.url).href,
   new URL('@/assets/images/hero/img2.png', import.meta.url).href,
@@ -57,9 +58,38 @@ onUnmounted(() => {
           Móveis planejados que unem o requinte do design contemporâneo à consciência ecológica.
           Qualidade garantida pelo Duran Group para transformar seu lar.
         </p>
+        
         <div class="hero-buttons">
           <a href="#contato" class="btn-primary">Começar meu Projeto</a>
           <a href="#sobre" class="btn-secondary">Conheça nossa história</a>
+        </div>
+
+        <!-- Ícones de redes sociais -->
+        <div class="hero-social-icons">
+          <a 
+            href="https://facebook.com/suapagina" 
+            target="_blank" 
+            class="social-icon"
+            aria-label="Facebook"
+          >
+            <Facebook :size="24" />
+          </a>
+          <a 
+            href="https://instagram.com/seuinstagram" 
+            target="_blank" 
+            class="social-icon"
+            aria-label="Instagram"
+          >
+            <Instagram :size="24" />
+          </a>
+          <a 
+            href="https://wa.me/5547000000000" 
+            target="_blank" 
+            class="social-icon"
+            aria-label="WhatsApp"
+          >
+            <Whatsapp :size="24" />
+          </a>
         </div>
       </div>
     </div>
@@ -182,12 +212,71 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 40px;
 }
 
 @media (min-width: 640px) {
   .hero-buttons {
     flex-direction: row;
   }
+}
+
+/* Ícones de redes sociais */
+.hero-social-icons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+@media (min-width: 768px) {
+  .hero-social-icons {
+    justify-content: flex-start;
+  }
+}
+
+.social-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.social-icon:hover {
+  transform: translateY(-3px);
+  background: #e3350d;
+  color: white;
+  box-shadow: 0 4px 12px rgba(227, 53, 13, 0.3);
+}
+
+.dark .social-icon {
+  background: rgba(30, 30, 30, 0.9);
+  color: #e5e5e5;
+}
+
+.dark .social-icon:hover {
+  background: #e3350d;
+  color: white;
+}
+
+/* Estilos específicos para cada ícone */
+.social-icon.facebook:hover {
+  background: #1877F2;
+}
+
+.social-icon.instagram:hover {
+  background: #E4405F;
+}
+
+.social-icon.whatsapp:hover {
+  background: #25D366;
 }
 
 .btn-primary {
@@ -254,6 +343,12 @@ onUnmounted(() => {
   background: rgba(255, 255, 255, 0.5);
   cursor: pointer;
   transition: all 0.3s;
+}
+
+span{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-indicator.active {
