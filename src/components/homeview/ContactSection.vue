@@ -1,20 +1,3 @@
-<script setup>
-// Importe os ícones
-import MapMarker from 'vue-material-design-icons/MapMarker.vue';
-import Phone from 'vue-material-design-icons/Phone.vue';
-import Email from 'vue-material-design-icons/Email.vue';
-import Whatsapp from 'vue-material-design-icons/Whatsapp.vue';
-import Facebook from 'vue-material-design-icons/Facebook.vue';
-import Instagram from 'vue-material-design-icons/Instagram.vue';
-
-const emit = defineEmits(['submit']);
-
-const handleSubmit = (e) => {
-  e.preventDefault();
-  emit('submit', e);
-};
-</script>
-
 <template>
   <section id="contato" class="contact">
     <div class="container">
@@ -83,42 +66,206 @@ const handleSubmit = (e) => {
           </div>
         </div>
         <div class="contact-form-wrapper">
-          <form @submit="handleSubmit" class="contact-form">
+          <form @submit.prevent="enviarFormulario" class="contact-form">
             <div class="form-row">
               <div class="form-group">
                 <label>Nome Completo</label>
-                <input type="text" placeholder="Seu nome" required />
+                <input 
+                  v-model="formData.nome" 
+                  type="text" 
+                  placeholder="Seu nome" 
+                  required 
+                  :disabled="carregando"
+                />
               </div>
               <div class="form-group">
                 <label>E-mail</label>
-                <input type="email" placeholder="seu@email.com" required />
+                <input 
+                  v-model="formData.email" 
+                  type="email" 
+                  placeholder="seu@email.com" 
+                  required 
+                  :disabled="carregando"
+                />
               </div>
             </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label>WhatsApp</label>
+                <input 
+                  v-model="formData.whatsapp" 
+                  type="tel" 
+                  placeholder="(47) 9XXXX-XXXX" 
+                  required 
+                  :disabled="carregando"
+                />
+              </div>
+              <div class="form-group">
+                <label>Telefone</label>
+                <input 
+                  v-model="formData.telefone" 
+                  type="tel" 
+                  placeholder="(47) XXXX-XXXX" 
+                  :disabled="carregando"
+                />
+              </div>
+            </div>
+
             <div class="form-group">
               <label>Qual ambiente deseja planejar?</label>
-              <select required>
+              <select 
+                v-model="formData.area_desejada" 
+                required 
+                :disabled="carregando"
+              >
                 <option value="" disabled selected>Selecione um ambiente</option>
-                <option>Cozinha</option>
-                <option>Dormitório</option>
-                <option>Sala de Estar</option>
-                <option>Banheiro</option>
-                <option>Área Gourmet</option>
-                <option>Corporativo</option>
+                <option value="Cozinha">Cozinha</option>
+                <option value="Dormitório">Dormitório</option>
+                <option value="Sala de Estar">Sala de Estar</option>
+                <option value="Banheiro">Banheiro</option>
+                <option value="Área Gourmet">Área Gourmet</option>
+                <option value="Corporativo">Corporativo</option>
+                <option value="Outro">Outro</option>
               </select>
             </div>
+            
             <div class="form-group">
               <label>Sua Mensagem</label>
-              <textarea placeholder="Conte-nos um pouco sobre seu sonho..." rows="4" required></textarea>
+              <textarea 
+                v-model="formData.descricao" 
+                placeholder="Conte-nos um pouco sobre seu sonho... (ex: medidas, estilo preferido, necessidades especiais)" 
+                rows="4" 
+                required 
+                :disabled="carregando"
+              ></textarea>
             </div>
-            <button type="submit" class="btn-submit">
-              <span>Enviar Solicitação</span>
+            
+            <button 
+              type="submit" 
+              class="btn-submit"
+              :disabled="carregando"
+              :class="{ loading: carregando }"
+            >
+              <span v-if="!carregando">Enviar Solicitação</span>
+              <span v-else class="loading-text">Enviando...</span>
             </button>
+            
+            <p class="form-disclaimer">
+              Ao enviar, você concorda com nossa política de privacidade e tratamento de dados.
+            </p>
           </form>
         </div>
       </div>
     </div>
   </section>
 </template>
+
+<script setup>
+import { ref } from 'vue'
+import emailjs from '@emailjs/browser'
+import MapMarker from 'vue-material-design-icons/MapMarker.vue'
+import Phone from 'vue-material-design-icons/Phone.vue'
+import Email from 'vue-material-design-icons/Email.vue'
+import Whatsapp from 'vue-material-design-icons/Whatsapp.vue'
+import Facebook from 'vue-material-design-icons/Facebook.vue'
+import Instagram from 'vue-material-design-icons/Instagram.vue'
+
+// Configuração do EmailJS
+const SERVICE_ID = 'service_m9mff5e'
+const TEMPLATE_ID = 'template_sjsua4p'
+const PUBLIC_KEY = 'voHcg31vLegbt3Q1o'
+
+// Inicializar EmailJS
+emailjs.init(PUBLIC_KEY)
+
+// Dados do formulário
+const formData = ref({
+  nome: '',
+  email: '',
+  whatsapp: '',
+  telefone: '',
+  area_desejada: '',
+  descricao: ''
+})
+
+const carregando = ref(false)
+
+// Função para formatar a data e hora atuais
+const formatarDataHora = () => {
+  const agora = new Date()
+  
+  // Formatar data (DD/MM/YYYY)
+  const dia = String(agora.getDate()).padStart(2, '0')
+  const mes = String(agora.getMonth() + 1).padStart(2, '0')
+  const ano = agora.getFullYear()
+  const dataFormatada = `${dia}/${mes}/${ano}`
+  
+  // Formatar hora (HH:MM)
+  const horas = String(agora.getHours()).padStart(2, '0')
+  const minutos = String(agora.getMinutes()).padStart(2, '0')
+  const horaFormatada = `${horas}:${minutos}`
+  
+  return { data_envio: dataFormatada, hora_envio: horaFormatada }
+}
+
+const enviarFormulario = async () => {
+  try {
+    carregando.value = true
+    
+    // Obter data e hora atuais
+    const { data_envio, hora_envio } = formatarDataHora()
+    
+    // Preparar dados para envio
+    const templateParams = {
+      nome: formData.value.nome,
+      email: formData.value.email,
+      whatsapp: formData.value.whatsapp,
+      telefone: formData.value.telefone || 'Não informado',
+      area_desejada: formData.value.area_desejada,
+      descricao: formData.value.descricao,
+      data_envio: data_envio,
+      hora_envio: hora_envio
+    }
+    
+    console.log('Enviando dados:', templateParams)
+    
+    // Enviar email usando EmailJS
+    const response = await emailjs.send(
+      SERVICE_ID,
+      TEMPLATE_ID,
+      templateParams
+    )
+    
+    console.log('Email enviado com sucesso:', response)
+    
+    // Mostrar mensagem de sucesso
+    alert('Solicitação enviada com sucesso! 🎉\n\nEntraremos em contato em breve para agendar sua consultoria gratuita.')
+    
+    // Resetar formulário
+    formData.value = {
+      nome: '',
+      email: '',
+      whatsapp: '',
+      telefone: '',
+      area_desejada: '',
+      descricao: ''
+    }
+    
+  } catch (error) {
+    console.error('Erro ao enviar formulário:', error)
+    
+    // Mensagem de erro amigável
+    if (error.text) {
+      alert(`Erro ao enviar: ${error.text}\n\nPor favor, tente novamente ou entre em contato diretamente pelo WhatsApp.`)
+    } else {
+      alert('Erro ao enviar sua solicitação. Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp (47) 99189-9212.')
+    }
+  } finally {
+    carregando.value = false
+  }
+}
+</script>
 
 <style scoped>
 .contact {
@@ -132,7 +279,8 @@ const handleSubmit = (e) => {
 
 .container {
   width: 95%;
-  margin: auto;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .contact-card {
@@ -154,16 +302,12 @@ const handleSubmit = (e) => {
 }
 
 .contact-info {
-  background: #333;
+  background: linear-gradient(135deg, #121212 0%, #292929 100%);
   padding: 48px;
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-
-.dark .contact-info {
-  background: #000;
 }
 
 .contact-title {
@@ -244,18 +388,6 @@ const handleSubmit = (e) => {
   background: #e3350d;
   transform: translateY(-3px);
   box-shadow: 0 4px 12px rgba(227, 53, 13, 0.3);
-}
-
-.social-link.facebook:hover {
-  background: #1877F2;
-}
-
-.social-link.instagram:hover {
-  background: #E4405F;
-}
-
-.social-link.whatsapp:hover {
-  background: #25D366;
 }
 
 .contact-form-wrapper {
@@ -341,6 +473,14 @@ const handleSubmit = (e) => {
   background-position: right 16px center;
   background-size: 16px;
   padding-right: 40px;
+  cursor: pointer;
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .btn-submit {
@@ -362,14 +502,56 @@ const handleSubmit = (e) => {
   margin-top: 10px;
 }
 
-.btn-submit:hover {
+.btn-submit:hover:not(:disabled) {
   background: #c72d0a;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(227, 53, 13, 0.3);
 }
 
-.btn-submit:active {
+.btn-submit:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-submit.loading {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-submit.loading::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.form-disclaimer {
+  font-size: 12px;
+  text-align: center;
+  color: #666;
+  margin-top: 16px;
+  line-height: 1.4;
+}
+
+.dark .form-disclaimer {
+  color: #aaa;
 }
 
 /* Responsividade */
@@ -413,7 +595,7 @@ const handleSubmit = (e) => {
   }
 }
 
-span{
+span {
   display: flex;
   justify-content: center;
   align-items: center;
