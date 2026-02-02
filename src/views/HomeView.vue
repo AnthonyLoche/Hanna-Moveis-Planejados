@@ -63,7 +63,7 @@ onMounted(() => {
 
     <FooterMain />
     
-    <a href="https://wa.me/5547000000000" target="_blank" class="whatsapp-float button-animate">
+    <a href="https://wa.me/5547991899212" target="_blank" class="whatsapp-float button-animate">
       <Whatsapp class="icon-animate" />
       <span class="whatsapp-tooltip">Orçamento via WhatsApp</span>
     </a>
