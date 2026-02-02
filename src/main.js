@@ -1,4 +1,5 @@
 import './assets/main.css'
+import '@/assets/fadein-animation.css';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
