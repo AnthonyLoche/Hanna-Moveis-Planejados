@@ -199,7 +199,7 @@ onUnmounted(() => {
 
 .hero-text {
   font-size: 20px;
-  color: #666;
+  color: #000000;
   margin-bottom: 40px;
   line-height: 1.7;
 }
