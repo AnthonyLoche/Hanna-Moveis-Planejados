@@ -67,7 +67,7 @@ onUnmounted(() => {
         <!-- Ícones de redes sociais -->
         <div class="hero-social-icons">
           <a 
-            href="https://facebook.com/suapagina" 
+            href="https://www.facebook.com/hannamoveisplanejados" 
             target="_blank" 
             class="social-icon"
             aria-label="Facebook"
@@ -75,7 +75,7 @@ onUnmounted(() => {
             <Facebook :size="24" />
           </a>
           <a 
-            href="https://instagram.com/seuinstagram" 
+            href="https://www.instagram.com/hannamoveisplanejados/" 
             target="_blank" 
             class="social-icon"
             aria-label="Instagram"
@@ -83,7 +83,7 @@ onUnmounted(() => {
             <Instagram :size="24" />
           </a>
           <a 
-            href="https://wa.me/5547000000000" 
+            href="https://wa.me/5547991899212" 
             target="_blank" 
             class="social-icon"
             aria-label="WhatsApp"

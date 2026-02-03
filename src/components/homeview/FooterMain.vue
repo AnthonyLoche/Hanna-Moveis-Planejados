@@ -1,12 +1,12 @@
 <script setup>
 // Importe os ícones
-import Web from 'vue-material-design-icons/Web.vue';
 import Instagram from 'vue-material-design-icons/Instagram.vue';
 import Whatsapp from 'vue-material-design-icons/Whatsapp.vue';
 import MapMarker from 'vue-material-design-icons/MapMarker.vue';
 import Phone from 'vue-material-design-icons/Phone.vue';
 import Email from 'vue-material-design-icons/Email.vue';
 import Leaf from 'vue-material-design-icons/Leaf.vue';
+import Facebook from 'vue-material-design-icons/Facebook.vue';
 </script>
 
 <template>
@@ -21,13 +21,13 @@ import Leaf from 'vue-material-design-icons/Leaf.vue';
                         consciência ambiental para transformar seu lar.
                     </p>
                     <div class="footer-social">
-                        <a href="https://hannamoveis.com.br" target="_blank" class="social-link" aria-label="Website">
-                            <Web :size="20" />
+                        <a href="https://www.facebook.com/hannamoveisplanejados" target="_blank" class="social-link" aria-label="Website">
+                            <Facebook :size="20" />
                         </a>
-                        <a href="https://instagram.com/hannamoveis" target="_blank" class="social-link" aria-label="Instagram">
+                        <a href="https://www.instagram.com/hannamoveisplanejados/" target="_blank" class="social-link" aria-label="Instagram">
                             <Instagram :size="20" />
                         </a>
-                        <a href="https://wa.me/554734330000" target="_blank" class="social-link" aria-label="WhatsApp">
+                        <a href="https://wa.me/5547991899212" target="_blank" class="social-link" aria-label="WhatsApp">
                             <Whatsapp :size="20" />
                         </a>
                     </div>
@@ -91,7 +91,7 @@ import Leaf from 'vue-material-design-icons/Leaf.vue';
                 </div>
                 <div class="footer-brand">
                     <strong>UMA MARCA DURAN GROUP</strong>
-                    <a href="/politica-de-privacidade">POLÍTICA DE PRIVACIDADE</a>
+                    <a>POLÍTICA DE PRIVACIDADE</a>
                 </div>
             </div>
         </div>
@@ -165,6 +165,8 @@ import Leaf from 'vue-material-design-icons/Leaf.vue';
     text-decoration: none;
     color: #666;
     transition: all 0.3s ease;
+    color: #e3350d;
+
 }
 
 .social-link:hover {
@@ -182,11 +184,6 @@ import Leaf from 'vue-material-design-icons/Leaf.vue';
 .social-link.instagram:hover {
     background: #E4405F;
     border-color: #E4405F;
-}
-
-.social-link.whatsapp:hover {
-    background: #25D366;
-    border-color: #25D366;
 }
 
 .dark .social-link {
