@@ -14,7 +14,6 @@ import {
 
 const handleContactSubmit = (e) => {
   e.preventDefault();
-  alert('Formulário enviado! Entraremos em contato em breve.');
 };
 
 onMounted(() => {
