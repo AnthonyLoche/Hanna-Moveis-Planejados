@@ -9,17 +9,13 @@ const scrollLeft = ref(0);
 const containerRef = ref(null);
 let autoplayInterval = null;
 
-// Mapa para controlar quais imagens já carregaram (sem mexer no array original)
-const loadedMap = ref({});
-
 const totalItems = computed(() => galleryItems.length);
 
-const markAsLoaded = (id) => {
-  loadedMap.value[id] = true;
-};
+// controla carregamento das imagens
+const loadedMap = ref({});
 
-const isLoaded = (id) => {
-  return !!loadedMap.value[id];
+const markLoaded = (id) => {
+  loadedMap.value[id] = true;
 };
 
 const nextSlide = () => {
@@ -33,17 +29,18 @@ const prevSlide = () => {
 };
 
 const updateScrollPosition = () => {
-  if (containerRef.value) {
-    const container = containerRef.value;
-    const itemWidth = container.children[0]?.offsetWidth || 0;
-    const gap = 24;
-    const scrollPosition = currentIndex.value * (itemWidth + gap);
+  if (!containerRef.value) return;
 
-    container.scrollTo({
-      left: scrollPosition,
-      behavior: "smooth",
-    });
-  }
+  const container = containerRef.value;
+  const itemWidth = container.children[0]?.offsetWidth || 0;
+  const gap = 24;
+
+  const scrollPosition = currentIndex.value * (itemWidth + gap);
+
+  container.scrollTo({
+    left: scrollPosition,
+    behavior: "smooth",
+  });
 };
 
 // Drag
@@ -85,9 +82,7 @@ const handleDragEnd = () => {
 };
 
 const preventTextSelection = (e) => {
-  if (isDragging.value) {
-    e.preventDefault();
-  }
+  if (isDragging.value) e.preventDefault();
 };
 
 // Autoplay
@@ -106,7 +101,7 @@ const stopAutoplay = () => {
   }
 };
 
-// Scroll update index
+// Atualiza índice pelo scroll
 const handleScroll = () => {
   if (containerRef.value && !isDragging.value) {
     const container = containerRef.value;
@@ -120,7 +115,6 @@ const handleScroll = () => {
 
 onMounted(() => {
   startAutoplay();
-
   if (containerRef.value) {
     containerRef.value.addEventListener("scroll", handleScroll);
   }
@@ -128,13 +122,11 @@ onMounted(() => {
 
 onUnmounted(() => {
   stopAutoplay();
-
   if (containerRef.value) {
     containerRef.value.removeEventListener("scroll", handleScroll);
   }
 });
 </script>
-
 <template>
   <section id="galeria" class="gallery">
     <div class="container">
@@ -147,19 +139,10 @@ onUnmounted(() => {
         </div>
 
         <div class="gallery-controls">
-          <button
-            @click="prevSlide"
-            class="gallery-control prev"
-            aria-label="Projeto anterior"
-          >
+          <button @click="prevSlide" class="gallery-control prev" aria-label="Projeto anterior">
             ‹
           </button>
-
-          <button
-            @click="nextSlide"
-            class="gallery-control next"
-            aria-label="Próximo projeto"
-          >
+          <button @click="nextSlide" class="gallery-control next" aria-label="Próximo projeto">
             ›
           </button>
         </div>
@@ -179,24 +162,18 @@ onUnmounted(() => {
           @selectstart="preventTextSelection"
           @dragstart="(e) => e.preventDefault()"
         >
-          <div
-            v-for="item in galleryItems"
-            :key="item.id"
-            class="gallery-item"
-            @mousedown.prevent
-          >
+          <div v-for="item in galleryItems" :key="item.id" class="gallery-item" @mousedown.prevent>
             <div class="image-wrapper">
               <img
                 :src="item.image"
-                :alt="item.alt"
+                :alt="item.alt || `Projeto ${item.id}`"
                 loading="lazy"
                 draggable="false"
-                @load="markAsLoaded(item.id)"
-                :class="{ loaded: isLoaded(item.id) }"
+                @load="markLoaded(item.id)"
+                :class="{ loaded: loadedMap[item.id] }"
               />
 
-              <!-- Skeleton suspense -->
-              <div v-if="!isLoaded(item.id)" class="image-skeleton"></div>
+              <div v-if="!loadedMap[item.id]" class="image-skeleton"></div>
             </div>
           </div>
         </div>
@@ -204,6 +181,7 @@ onUnmounted(() => {
     </div>
   </section>
 </template>
+
 <style scoped>
 .gallery {
   padding: 96px 0;
