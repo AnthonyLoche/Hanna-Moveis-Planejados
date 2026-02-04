@@ -9,7 +9,9 @@ import {
   SustainabilitySection,
   QualitiesSection,
   GallerySection,
-  ContactSection
+  ContactSection,
+  TestimonialsSection, 
+  VideosSection
 } from '@/components';
 
 const handleContactSubmit = (e) => {
@@ -40,6 +42,10 @@ onMounted(() => {
       <HeroMain />
     </div>
 
+    <div class="section-animate" data-animate="slide-right">
+      <VideosSection />
+    </div>
+
     <div class="section-animate" data-animate="fade-up">
       <AboutComp />
     </div>
@@ -50,6 +56,10 @@ onMounted(() => {
 
     <div class="section-animate" data-animate="fade-up">
       <QualitiesSection />
+    </div>
+
+    <div class="section-animate" data-animate="slide-left">
+      <TestimonialsSection />
     </div>
 
     <div class="section-animate" data-animate="zoom-in">

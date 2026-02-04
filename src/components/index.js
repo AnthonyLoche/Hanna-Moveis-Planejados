@@ -6,5 +6,7 @@ import SustainabilitySection from "./homeview/SustainabilitySection.vue";
 import GallerySection from "./homeview/GallerySection.vue";
 import QualitiesSection from "./homeview/QualitiesSection.vue";
 import ContactSection from "./homeview/ContactSection.vue";
+import TestimonialsSection from "./homeview/TestimonialsSection.vue";
+import VideosSection from "./homeview/VideosSection.vue";
 
-export {HeaderMain, FooterMain, AboutComp, HeroMain, QualitiesSection, GallerySection, SustainabilitySection, ContactSection}
+export {HeaderMain, FooterMain, AboutComp, HeroMain, QualitiesSection, GallerySection, SustainabilitySection, ContactSection, TestimonialsSection, VideosSection}

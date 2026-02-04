@@ -60,7 +60,7 @@ onUnmounted(() => {
         </p>
         
         <div class="hero-buttons">
-          <a href="#contato" class="btn-primary">Começar meu Projeto</a>
+          <a href="#contato" class="btn-primary">Quero Meu Orçamento Agora</a>
           <a href="#sobre" class="btn-secondary">Conheça nossa história</a>
         </div>
 

@@ -18,7 +18,7 @@
         <a href="#contato">Contato</a>
       </nav>
       <div class="header-actions">
-        <a href="#contato" class="btn-primary btn-desktop">Solicitar Orçamento</a>
+        <a href="#contato" class="btn-primary btn-desktop">Quero Meu Orçamento Agora</a>
       </div>
     </div>
   </header>

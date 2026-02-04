@@ -7,74 +7,7 @@ const startX = ref(0);
 const scrollLeft = ref(0);
 const containerRef = ref(null);
 let autoplayInterval = null;
-
-// Array de projetos da galeria
-const galleryItems = [
-  {
-    id: 1,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdhhIUOms8HGCHT1C2xd7sBV6o1XdHA4IVE6BjO8XQPXVEk2Bd-JBDMd7wyHx-6cQaCxe75GM_TC2dCCzPD6JUn-6KLghzowxM-FUTZlPajU7603v-buTRCiVLntSW0NVfSd8JJ3jsIlfJfXwKz5QM3CqP4-6MT9NhhTON4KYmtFOQKMz4hJwGhdxtt54eCKyxNU5ctxBbfM6iuX3gOW-jW8kzAseCaNbdVB4UsdqLXZbl_YsY-ebcNOqcR7w5VjyPGx-Xv83aV34",
-    alt: "Cozinha Minimalista",
-    tag: "Cozinha Gourmet",
-    title: "Minimalismo Funcional",
-    description: "Linhas limpas e acabamento em carvalho natural."
-  },
-  {
-    id: 2,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCuv0_MHae8MqAN3YwqEkBc4fhXG-_RvgCmtqonwE-tYv82wi5zrI6LLnP59Ss1DYGJ4Kkcb2kDwUkwBDHW5pNpSaE25Y2MgX_9Wq5z8SrFfz5SPM0o7IRQnqn9n6WLuO0H6Yy93LXae-yzLoZ5VLI0_1L_cYkpzhDPvsMk0GiTfrAeAGbcW4Co23K9ffnG6_PDa3W6nAwoLogT5oqixxh41F1hD5S_nPPo4rZSZu46k4TNOAB5yNiPAsW27ybSQTPuK16E0H2_Mc0",
-    alt: "Living Sofisticado",
-    tag: "Living Room",
-    title: "Home Theater Premium",
-    description: "Painéis ripados com iluminação em LED embutida."
-  },
-  {
-    id: 3,
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuA1GpOFeXChytlhmo6wpLiM3_8gZgVh8R8OiMvY9bMqu2vBPvU4K4tqNEVoVAcaguQMqt9IM1Muz1Ij4EwRAbVz4qZsxYRnoUHyIRZtFsu9qnGn9nNSzg1N41dd3TwxyKXjuPsw9TRGp_W7z8R0FjtP-xJDCEjftpt5Y9iTY4Eud6WwrNfCYVRjq79l5Aaa5GlDfBnmb37TACEWepzqweRo0GWMY8GBe1Z_r0psdNiSdkOmrwkqj_V3F4TUc7nd6o5a45wt_UQ7lXw",
-    alt: "Dormitório",
-    tag: "Suíte Master",
-    title: "Refúgio Contemporâneo",
-    description: "Closet integrado e cabeceira estofada sob medida."
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2058&auto=format&fit=crop",
-    alt: "Escritório Moderno",
-    tag: "Home Office",
-    title: "Escritório Produtivo",
-    description: "Design ergonômico com iluminação natural."
-  },
-  {
-    id: 5,
-    image: "https://images.unsplash.com/photo-1616137466211-f939a420be84?q=80&w=2070&auto=format&fit=crop",
-    alt: "Sala de Estar",
-    tag: "Living Room",
-    title: "Conforto Elegante",
-    description: "Móveis sob medida e decoração minimalista."
-  },
-  {
-    id: 6,
-    image: "https://images.unsplash.com/photo-1616486029423-aaa4789e8c9a?q=80&w=2070&auto=format&fit=crop",
-    alt: "Área Gourmet",
-    tag: "Área Externa",
-    title: "Entretenimento ao Ar Livre",
-    description: "Móveis resistentes para área externa."
-  },
-  {
-    id: 7,
-    image: "https://images.unsplash.com/photo-1519643381401-22c77e60520e?q=80&w=2070&auto=format&fit=crop",
-    alt: "Banheiro Luxuoso",
-    tag: "Banheiro",
-    title: "Spa Residencial",
-    description: "Mobiliário premium para banheiros."
-  },
-  {
-    id: 8,
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070&auto=format&fit=crop",
-    alt: "Quarto Infantil",
-    tag: "Quarto Infantil",
-    title: "Mundo da Imaginação",
-    description: "Móveis lúdicos e seguros para crianças."
-  }
-];
+import { galleryItems } from '@/data/galery';
 
 const totalItems = computed(() => galleryItems.length);
 
@@ -245,11 +178,7 @@ onUnmounted(() => {
               :alt="item.alt"
               draggable="false"
             />
-            <div class="gallery-overlay">
-              <div class="gallery-tag">{{ item.tag }}</div>
-              <h4 class="gallery-title">{{ item.title }}</h4>
-              <p class="gallery-description">{{ item.description }}</p>
-            </div>
+            
           </div>
         </div>
         
