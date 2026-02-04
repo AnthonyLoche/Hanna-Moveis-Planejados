@@ -184,8 +184,7 @@ onUnmounted(() => {
 <style scoped>
 .videos-section {
   padding: 5rem 0;
-  background-color: #f8f5f5;
-  width: 85%;
+  width: 95%;
   margin: auto;
   position: relative;
 }
