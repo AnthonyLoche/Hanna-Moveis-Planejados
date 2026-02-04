@@ -1,5 +1,23 @@
 <template>
   <section id="contato" class="contact">
+    <!-- Toast Notification -->
+    <div v-if="toast.visible" :class="['toast', toast.type]" @click="fecharToast">
+      <div class="toast-content">
+        <div class="toast-icon">
+          <CheckCircle v-if="toast.type === 'success'" :size="24" />
+          <AlertCircle v-else :size="24" />
+        </div>
+        <div class="toast-message">
+          <h4>{{ toast.title }}</h4>
+          <p>{{ toast.message }}</p>
+        </div>
+        <button class="toast-close" @click.stop="fecharToast">
+          <Close :size="20" />
+        </button>
+      </div>
+      <div class="toast-progress" :style="{ width: `${toast.progress}%` }"></div>
+    </div>
+
     <div class="container">
       <div class="contact-card">
         <div class="contact-info">
@@ -160,14 +178,18 @@
     </div>
   </section>
 </template>
+
 <script setup>
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import MapMarker from 'vue-material-design-icons/MapMarker.vue'
 import Phone from 'vue-material-design-icons/Phone.vue'
 import Email from 'vue-material-design-icons/Email.vue'
 import Whatsapp from 'vue-material-design-icons/Whatsapp.vue'
 import Facebook from 'vue-material-design-icons/Facebook.vue'
 import Instagram from 'vue-material-design-icons/Instagram.vue'
+import CheckCircle from 'vue-material-design-icons/CheckCircle.vue'
+import AlertCircle from 'vue-material-design-icons/AlertCircle.vue'
+import Close from 'vue-material-design-icons/Close.vue'
 
 // Dados do formulário
 const formData = ref({
@@ -180,6 +202,51 @@ const formData = ref({
 })
 
 const carregando = ref(false)
+
+// Toast notification
+const toast = reactive({
+  visible: false,
+  type: 'success', // 'success' ou 'error'
+  title: '',
+  message: '',
+  progress: 100,
+  duration: 5000, // 5 segundos
+  interval: null
+})
+
+const mostrarToast = (type, title, message) => {
+  // Fecha toast anterior se existir
+  fecharToast()
+
+  // Configura novo toast
+  toast.visible = true
+  toast.type = type
+  toast.title = title
+  toast.message = message
+  toast.progress = 100
+
+  // Inicia progresso
+  const startTime = Date.now()
+  toast.interval = setInterval(() => {
+    const elapsed = Date.now() - startTime
+    toast.progress = Math.max(0, 100 - (elapsed / toast.duration) * 100)
+    
+    if (toast.progress <= 0) {
+      fecharToast()
+    }
+  }, 50)
+
+  // Auto-fechar após duração
+  setTimeout(fecharToast, toast.duration)
+}
+
+const fecharToast = () => {
+  toast.visible = false
+  if (toast.interval) {
+    clearInterval(toast.interval)
+    toast.interval = null
+  }
+}
 
 // Função para enviar para tua API na Vercel
 const enviarFormulario = async () => {
@@ -207,7 +274,12 @@ const enviarFormulario = async () => {
       throw new Error(data?.message || 'Erro ao enviar formulário')
     }
 
-    alert('Solicitação enviada com sucesso! 🎉\n\nEntraremos em contato em breve para agendar sua consultoria gratuita.')
+    // Toast de sucesso
+    mostrarToast(
+      'success',
+      'Solicitação enviada com sucesso! 🎉',
+      'Entraremos em contato em breve para agendar sua consultoria gratuita.'
+    )
 
     // Resetar formulário
     formData.value = {
@@ -222,8 +294,10 @@ const enviarFormulario = async () => {
   } catch (error) {
     console.error('Erro ao enviar formulário:', error)
 
-    alert(
-      'Erro ao enviar sua solicitação. 😕\n\n' +
+    // Toast de erro
+    mostrarToast(
+      'error',
+      'Erro ao enviar sua solicitação 😕',
       'Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp (47) 99189-9212.'
     )
   } finally {
@@ -236,6 +310,7 @@ const enviarFormulario = async () => {
 .contact {
   padding: 96px 0;
   background: #f5f5f5;
+  position: relative;
 }
 
 .dark .contact {
@@ -248,6 +323,141 @@ const enviarFormulario = async () => {
   margin: 0 auto;
 }
 
+/* Toast Styles */
+.toast {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  max-width: 400px;
+  width: 90%;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.dark .toast {
+  background: #2a2a2a;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.toast:hover {
+  transform: translateY(-2px);
+}
+
+.toast.success {
+  border-left: 4px solid #10b981;
+}
+
+.toast.error {
+  border-left: 4px solid #e3350d;
+}
+
+.toast-content {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px;
+  gap: 12px;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.toast.success .toast-icon {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.toast.error .toast-icon {
+  background: rgba(227, 53, 13, 0.1);
+  color: #e3350d;
+}
+
+.toast-message {
+  flex: 1;
+}
+
+.toast-message h4 {
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.dark .toast-message h4 {
+  color: #e5e5e5;
+}
+
+.toast-message p {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.4;
+}
+
+.dark .toast-message p {
+  color: #aaa;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: #666;
+}
+
+.dark .toast-close {
+  color: #aaa;
+}
+
+.dark .toast-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e5e5e5;
+}
+
+.toast-progress {
+  height: 3px;
+  background: linear-gradient(90deg, #10b981, #34d399);
+  transition: width 0.05s linear;
+}
+
+.toast.error .toast-progress {
+  background: linear-gradient(90deg, #e3350d, #f87171);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Restante dos estilos mantidos */
 .contact-card {
   background: white;
   border-radius: 24px;
@@ -557,6 +767,13 @@ const enviarFormulario = async () => {
   
   .social-links {
     justify-content: center;
+  }
+  
+  .toast {
+    top: 16px;
+    right: 16px;
+    left: 16px;
+    width: auto;
   }
 }
 
