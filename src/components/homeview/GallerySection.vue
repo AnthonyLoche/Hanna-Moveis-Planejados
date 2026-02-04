@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue';
+import { ref, onMounted, onUnmounted, computed } from "vue";
+import { galleryItems } from "@/data/galery";
 
 const currentIndex = ref(0);
 const isDragging = ref(false);
@@ -7,9 +8,19 @@ const startX = ref(0);
 const scrollLeft = ref(0);
 const containerRef = ref(null);
 let autoplayInterval = null;
-import { galleryItems } from '@/data/galery';
+
+// Mapa para controlar quais imagens já carregaram (sem mexer no array original)
+const loadedMap = ref({});
 
 const totalItems = computed(() => galleryItems.length);
+
+const markAsLoaded = (id) => {
+  loadedMap.value[id] = true;
+};
+
+const isLoaded = (id) => {
+  return !!loadedMap.value[id];
+};
 
 const nextSlide = () => {
   currentIndex.value = (currentIndex.value + 1) % totalItems.value;
@@ -27,43 +38,40 @@ const updateScrollPosition = () => {
     const itemWidth = container.children[0]?.offsetWidth || 0;
     const gap = 24;
     const scrollPosition = currentIndex.value * (itemWidth + gap);
+
     container.scrollTo({
       left: scrollPosition,
-      behavior: 'smooth'
+      behavior: "smooth",
     });
   }
 };
 
-// Funções de drag (arrastar) - CORRIGIDAS
+// Drag
 const handleDragStart = (e) => {
   isDragging.value = true;
   startX.value = e.pageX || e.touches[0].pageX;
   scrollLeft.value = containerRef.value.scrollLeft;
   stopAutoplay();
-  
-  // Prevenir seleção de texto durante o drag
+
   e.preventDefault();
-  
-  // Adicionar classe para mudar o cursor
-  containerRef.value.classList.add('dragging');
+  containerRef.value.classList.add("dragging");
 };
 
 const handleDragMove = (e) => {
   if (!isDragging.value) return;
-  
+
   e.preventDefault();
   const x = e.pageX || (e.touches && e.touches[0].pageX);
   if (!x) return;
-  
-  const walk = (x - startX.value) * 1.5; // Velocidade do arrasto
+
+  const walk = (x - startX.value) * 1.5;
   containerRef.value.scrollLeft = scrollLeft.value - walk;
 };
 
 const handleDragEnd = () => {
   isDragging.value = false;
-  containerRef.value.classList.remove('dragging');
-  
-  // Atualiza o índice baseado na posição do scroll
+  containerRef.value.classList.remove("dragging");
+
   if (containerRef.value) {
     const container = containerRef.value;
     const itemWidth = container.children[0]?.offsetWidth || 0;
@@ -72,11 +80,10 @@ const handleDragEnd = () => {
     const newIndex = Math.round(scrollPos / (itemWidth + gap));
     currentIndex.value = Math.max(0, Math.min(newIndex, totalItems.value - 1));
   }
-  
+
   startAutoplay();
 };
 
-// Prevenir seleção de texto ao clicar
 const preventTextSelection = (e) => {
   if (isDragging.value) {
     e.preventDefault();
@@ -86,9 +93,10 @@ const preventTextSelection = (e) => {
 // Autoplay
 const startAutoplay = () => {
   if (autoplayInterval) clearInterval(autoplayInterval);
+
   autoplayInterval = setInterval(() => {
     nextSlide();
-  }, 5000); // Muda a cada 5 segundos
+  }, 5000);
 };
 
 const stopAutoplay = () => {
@@ -98,7 +106,7 @@ const stopAutoplay = () => {
   }
 };
 
-// Observar mudanças no scroll
+// Scroll update index
 const handleScroll = () => {
   if (containerRef.value && !isDragging.value) {
     const container = containerRef.value;
@@ -112,15 +120,17 @@ const handleScroll = () => {
 
 onMounted(() => {
   startAutoplay();
+
   if (containerRef.value) {
-    containerRef.value.addEventListener('scroll', handleScroll);
+    containerRef.value.addEventListener("scroll", handleScroll);
   }
 });
 
 onUnmounted(() => {
   stopAutoplay();
+
   if (containerRef.value) {
-    containerRef.value.removeEventListener('scroll', handleScroll);
+    containerRef.value.removeEventListener("scroll", handleScroll);
   }
 });
 </script>
@@ -135,16 +145,18 @@ onUnmounted(() => {
             Ambientes reais transformados em sonhos realizados com marcenaria premium.
           </p>
         </div>
+
         <div class="gallery-controls">
-          <button 
-            @click="prevSlide" 
+          <button
+            @click="prevSlide"
             class="gallery-control prev"
             aria-label="Projeto anterior"
           >
             ‹
           </button>
-          <button 
-            @click="nextSlide" 
+
+          <button
+            @click="nextSlide"
             class="gallery-control next"
             aria-label="Próximo projeto"
           >
@@ -152,9 +164,9 @@ onUnmounted(() => {
           </button>
         </div>
       </div>
-      
+
       <div class="gallery-carousel-container">
-        <div 
+        <div
           ref="containerRef"
           class="gallery-carousel"
           @mousedown="handleDragStart"
@@ -167,32 +179,37 @@ onUnmounted(() => {
           @selectstart="preventTextSelection"
           @dragstart="(e) => e.preventDefault()"
         >
-          <div 
-            v-for="item in galleryItems" 
+          <div
+            v-for="item in galleryItems"
             :key="item.id"
             class="gallery-item"
             @mousedown.prevent
           >
-            <img
-              :src="item.image"
-              :alt="item.alt"
-              draggable="false"
-            />
-            
+            <div class="image-wrapper">
+              <img
+                :src="item.image"
+                :alt="item.alt"
+                loading="lazy"
+                draggable="false"
+                @load="markAsLoaded(item.id)"
+                :class="{ loaded: isLoaded(item.id) }"
+              />
+
+              <!-- Skeleton suspense -->
+              <div v-if="!isLoaded(item.id)" class="image-skeleton"></div>
+            </div>
           </div>
         </div>
-        
       </div>
     </div>
   </section>
 </template>
-
 <style scoped>
 .gallery {
   padding: 96px 0;
   background: white;
   position: relative;
-  user-select: none; /* Prevenir seleção de texto */
+  user-select: none;
 }
 
 .dark .gallery {
@@ -225,7 +242,7 @@ onUnmounted(() => {
   max-width: 600px;
 }
 
-/* Controles do carrossel */
+/* Controles */
 .gallery-controls {
   display: flex;
   gap: 12px;
@@ -274,7 +291,7 @@ onUnmounted(() => {
   color: white;
 }
 
-/* Container do carrossel */
+/* Container carrossel */
 .gallery-carousel-container {
   position: relative;
   overflow: hidden;
@@ -285,16 +302,16 @@ onUnmounted(() => {
   gap: 24px;
   overflow-x: auto;
   scroll-behavior: smooth;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   cursor: grab;
   padding-bottom: 20px;
   margin-bottom: 20px;
-  -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 .gallery-carousel::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
 }
 
 .gallery-carousel.dragging {
@@ -307,7 +324,7 @@ onUnmounted(() => {
   user-select: none;
 }
 
-/* Itens do carrossel */
+/* Itens */
 .gallery-item {
   flex: 0 0 calc(100% - 20px);
   min-width: 300px;
@@ -345,135 +362,90 @@ onUnmounted(() => {
   transform: translateY(-8px);
 }
 
+/* Wrapper da imagem (IMPORTANTE pro skeleton funcionar) */
+.image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #f3f3f3;
+}
+
+.dark .image-wrapper {
+  background: #1b1b1b;
+}
+
+/* Imagem */
 .gallery-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.7s;
-  pointer-events: none; /* Prevenir drag da imagem */
+  pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+
+  /* suspense + fade-in */
+  opacity: 0;
+  transform: scale(1.03);
+  transition: opacity 0.4s ease, transform 0.7s ease;
 }
 
-.gallery-item:hover img {
+.gallery-item img.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gallery-item:hover img.loaded {
   transform: scale(1.05);
 }
 
-.gallery-overlay {
+/* Skeleton shimmer */
+.image-skeleton {
   position: absolute;
   inset: 0;
+  border-radius: 16px;
+  overflow: hidden;
   background: linear-gradient(
-    to top,
-    rgba(51, 51, 51, 0.95) 0%,
-    rgba(51, 51, 51, 0.7) 40%,
-    rgba(51, 51, 51, 0.3) 70%,
-    transparent 100%
+    90deg,
+    rgba(0, 0, 0, 0.06) 0%,
+    rgba(0, 0, 0, 0.12) 50%,
+    rgba(0, 0, 0, 0.06) 100%
   );
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 32px;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none; /* Não interferir no drag */
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite linear;
 }
 
-.gallery-item:hover .gallery-overlay {
-  opacity: 1;
+.dark .image-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.12) 50%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
 }
 
-.gallery-tag {
-  color: #e3350d;
-  font-weight: 700;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 8px;
-  user-select: none;
-}
-
-.gallery-title {
-  color: white;
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  line-height: 1.3;
-  user-select: none;
-}
-
-@media (min-width: 768px) {
-  .gallery-title {
-    font-size: 24px;
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
   }
 }
 
-.gallery-description {
-  color: #e5e5e5;
-  font-size: 14px;
-  line-height: 1.5;
-  opacity: 0.9;
-  user-select: none;
-}
-
-/* Indicadores */
-.gallery-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-
-.gallery-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.2);
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s;
-  padding: 0;
-  user-select: none;
-}
-
-.gallery-indicator:hover {
-  background: rgba(227, 53, 13, 0.7);
-  transform: scale(1.2);
-}
-
-.gallery-indicator.active {
-  background: #e3350d;
-  transform: scale(1.3);
-}
-
-.dark .gallery-indicator {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.dark .gallery-indicator.active {
-  background: #e3350d;
-}
-
-/* Responsividade adicional */
+/* Responsividade */
 @media (max-width: 639px) {
   .gallery-item {
     min-width: 280px;
   }
-  
+
   .gallery-controls {
     align-self: center;
   }
-  
-  .gallery-title {
-    font-size: 18px;
-  }
-  
-  .gallery-description {
-    font-size: 13px;
-  }
 }
 
-/* Prevenir seleção de texto em todos os elementos */
+/* Prevenir seleção em tudo */
 .gallery-carousel * {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -483,7 +455,6 @@ onUnmounted(() => {
   user-select: none;
 }
 
-/* Estilo específico para quando estiver arrastando */
 .gallery-carousel:active {
   cursor: grabbing;
 }
