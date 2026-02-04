@@ -160,24 +160,14 @@
     </div>
   </section>
 </template>
-
 <script setup>
 import { ref } from 'vue'
-import emailjs from '@emailjs/browser'
 import MapMarker from 'vue-material-design-icons/MapMarker.vue'
 import Phone from 'vue-material-design-icons/Phone.vue'
 import Email from 'vue-material-design-icons/Email.vue'
 import Whatsapp from 'vue-material-design-icons/Whatsapp.vue'
 import Facebook from 'vue-material-design-icons/Facebook.vue'
 import Instagram from 'vue-material-design-icons/Instagram.vue'
-
-// Configuração do EmailJS
-const SERVICE_ID = 'service_m9mff5e'
-const TEMPLATE_ID = 'template_sjsua4p'
-const PUBLIC_KEY = 'voHcg31vLegbt3Q1o'
-
-// Inicializar EmailJS
-emailjs.init(PUBLIC_KEY)
 
 // Dados do formulário
 const formData = ref({
@@ -191,57 +181,34 @@ const formData = ref({
 
 const carregando = ref(false)
 
-// Função para formatar a data e hora atuais
-const formatarDataHora = () => {
-  const agora = new Date()
-  
-  // Formatar data (DD/MM/YYYY)
-  const dia = String(agora.getDate()).padStart(2, '0')
-  const mes = String(agora.getMonth() + 1).padStart(2, '0')
-  const ano = agora.getFullYear()
-  const dataFormatada = `${dia}/${mes}/${ano}`
-  
-  // Formatar hora (HH:MM)
-  const horas = String(agora.getHours()).padStart(2, '0')
-  const minutos = String(agora.getMinutes()).padStart(2, '0')
-  const horaFormatada = `${horas}:${minutos}`
-  
-  return { data_envio: dataFormatada, hora_envio: horaFormatada }
-}
-
+// Função para enviar para tua API na Vercel
 const enviarFormulario = async () => {
   try {
     carregando.value = true
-    
-    // Obter data e hora atuais
-    const { data_envio, hora_envio } = formatarDataHora()
-    
-    // Preparar dados para envio
-    const templateParams = {
+
+    const payload = {
       nome: formData.value.nome,
       email: formData.value.email,
       whatsapp: formData.value.whatsapp,
-      telefone: formData.value.telefone || 'Não informado',
+      telefone: formData.value.telefone,
       area_desejada: formData.value.area_desejada,
-      descricao: formData.value.descricao,
-      data_envio: data_envio,
-      hora_envio: hora_envio
+      descricao: formData.value.descricao
     }
-    
-    console.log('Enviando dados:', templateParams)
-    
-    // Enviar email usando EmailJS
-    const response = await emailjs.send(
-      SERVICE_ID,
-      TEMPLATE_ID,
-      templateParams
-    )
-    
-    console.log('Email enviado com sucesso:', response)
-    
-    // Mostrar mensagem de sucesso
+
+    const response = await fetch('/api/contato', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+
+    const data = await response.json()
+
+    if (!response.ok || !data?.ok) {
+      throw new Error(data?.message || 'Erro ao enviar formulário')
+    }
+
     alert('Solicitação enviada com sucesso! 🎉\n\nEntraremos em contato em breve para agendar sua consultoria gratuita.')
-    
+
     // Resetar formulário
     formData.value = {
       nome: '',
@@ -251,16 +218,14 @@ const enviarFormulario = async () => {
       area_desejada: '',
       descricao: ''
     }
-    
+
   } catch (error) {
     console.error('Erro ao enviar formulário:', error)
-    
-    // Mensagem de erro amigável
-    if (error.text) {
-      alert(`Erro ao enviar: ${error.text}\n\nPor favor, tente novamente ou entre em contato diretamente pelo WhatsApp.`)
-    } else {
-      alert('Erro ao enviar sua solicitação. Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp (47) 99189-9212.')
-    }
+
+    alert(
+      'Erro ao enviar sua solicitação. 😕\n\n' +
+      'Por favor, tente novamente ou entre em contato diretamente pelo WhatsApp (47) 99189-9212.'
+    )
   } finally {
     carregando.value = false
   }
