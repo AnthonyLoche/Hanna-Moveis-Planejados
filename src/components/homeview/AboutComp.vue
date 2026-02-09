@@ -9,7 +9,7 @@
           <div class="about-decoration"></div>
         </div>
         <div class="about-text">
-          <h2 class="section-title">Excelência do Duran Group agora na Hanna</h2>
+          <h2 class="section-title">Hanna Única Empresa Que Dá A Você Assistência Vitalícia Dos Seus Móveis</h2>
           <p class="text-large">
             A Hanna Móveis Planejados nasce sob a égide do conceituado Duran Group, trazendo
             décadas de experiência em marcenaria de alto padrão para Joinville e região.
@@ -21,7 +21,7 @@
           </p>
           <div class="stats-grid">
             <div class="stat-item">
-              <span class="stat-number">25+</span>
+              <span class="stat-number">15+</span>
               <span class="stat-label">Anos de Grupo</span>
             </div>
             <div class="stat-item">
