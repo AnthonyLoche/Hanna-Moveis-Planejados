@@ -88,6 +88,8 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
                     <span>© 2026 HANNA MÓVEIS PLANEJADOS</span>
                     <span class="separator">|</span>
                     <span>TODOS OS DIREITOS RESERVADOS</span>
+                    <span class="separator">|</span>
+                    <span>Feito e Desenvolvido por: <a href="https://my-portfolio-anthonygabriel.vercel.app/" class="link" target="_blank"> Anthony Gabriel</a></span>
                 </div>
                 <div class="footer-brand">
                     <strong>UMA MARCA DURAN GROUP</strong>
@@ -104,6 +106,13 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
     padding: 48px 0 24px;
     border-top: 1px solid #e5e5e5;
     color: #292929;
+}
+
+.link{
+    text-decoration: none;
+    color: #e3350d;
+    font-weight: 600;
+    margin-left: .3rem;
 }
 
 .container {
