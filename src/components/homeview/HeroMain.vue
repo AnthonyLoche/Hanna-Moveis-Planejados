@@ -50,7 +50,6 @@ onUnmounted(() => {
     
     <div class="container">
       <div class="hero-content">
-        <div class="hero-tag">Bem-vindo à Hanna Móveis</div>
         <h1 class="hero-title">
           Sua felicidade <br /><div class="highlight">nos motiva!</div>
         </h1>
