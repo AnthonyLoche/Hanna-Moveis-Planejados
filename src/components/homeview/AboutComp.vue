@@ -1,10 +1,40 @@
+<script setup>
+import { onMounted, ref } from 'vue';
+import hannasection from '../../assets/images/hannasection.jpg';
+import hannasection1 from '../../assets/images/hannasection1.jpg';
+import hannasection2 from '../../assets/images/hannasection2.jpg';
+
+
+const selectedImage = ref(null);
+
+onMounted(() => {
+
+  const number = Math.floor(Math.random() * 3);
+  switch (number) {
+    case 0:
+      selectedImage.value = hannasection;
+      break;
+    case 1:
+      selectedImage.value = hannasection1;
+      break;
+    case 2:
+      selectedImage.value = hannasection2;
+      break;
+    default:
+      selectedImage.value = hannasection;
+  }
+
+});
+
+</script>
+
 <template>
   <section id="sobre" class="about">
     <div class="container">
       <div class="about-grid">
         <div class="about-image-wrapper">
           <img
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFLwOWMNnaS-V4Exj9rFQXEcdWCrkQGQcz353XQmVZVXizKlAFrHcW8WPqDZO4adUu2xC3tYxSfUk6gFTdzDGTCcLhbz6cgT5J3atCMAUXvkFFHA73AslTg6bh3g5me3t72zYtPyM7i_RNg5K_9fDWzaWeLi9rwlJd9YoMTauuIF-DMzWktJS7326UXZdWQlYK2JN735HBaSFDwehnnQRIivThU8W56P3kGMavzkRClD1bLRNPVb1U0Ud_QCUHuB0s4n4iHcCXBD0"
+            :src="selectedImage"
             alt="Cozinha Planejada Moderna" class="about-image" />
           <div class="about-decoration"></div>
         </div>

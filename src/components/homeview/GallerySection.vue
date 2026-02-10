@@ -146,6 +146,7 @@ onUnmounted(() => {
             ›
           </button>
         </div>
+        
       </div>
 
       <div class="gallery-carousel-container">
@@ -178,6 +179,14 @@ onUnmounted(() => {
           </div>
         </div>
       </div>
+      <div class="gallery-controls-bottom">
+          <button @click="prevSlide" class="gallery-control-bottom prev" aria-label="Projeto anterior">
+            ‹
+          </button>
+          <button @click="nextSlide" class="gallery-control-bottom next" aria-label="Próximo projeto">
+            ›
+          </button>
+        </div>
     </div>
   </section>
 </template>
@@ -225,6 +234,42 @@ onUnmounted(() => {
   display: flex;
   gap: 12px;
   margin-top: 16px;
+}
+
+.gallery-controls-bottom{
+  display: none;
+  gap: 12px;
+  margin-top: 16px;
+  
+}
+
+.gallery-controls-bottom > .gallery-control-bottom {
+ width: 100%;
+ padding: .5rem;
+ border-radius: 15px;
+  border: 2px solid #e3350d;
+  background: white;
+  color: #e3350d;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+@media screen and (max-width: 1024px) {
+  .gallery-controls-bottom {
+    display: flex;
+  }
+
+  .gallery-controls {
+    display: none;
+  }
 }
 
 @media (min-width: 768px) {
@@ -283,8 +328,8 @@ onUnmounted(() => {
   scrollbar-width: none;
   -ms-overflow-style: none;
   cursor: grab;
-  padding-bottom: 20px;
-  margin-bottom: 20px;
+  padding-bottom: 5px;
+  margin-bottom: 5px;
   -webkit-overflow-scrolling: touch;
 }
 
