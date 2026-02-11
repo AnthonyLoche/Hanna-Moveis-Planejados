@@ -2,27 +2,40 @@
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { galleryItems } from "@/data/galery";
 
+// ========== CONFIGURAÇÕES DE PRIORIDADE ==========
+const PRIORITY_COUNT = 8;           // Nº de imagens carregadas imediatamente
+const BATCH_SIZE = 4;              // Imagens por lote no carregamento posterior
+const BATCH_DELAY = 300;          // Intervalo entre lotes (ms)
+
+// ========== ESTADOS ==========
 const currentIndex = ref(0);
 const isDragging = ref(false);
 const startX = ref(0);
 const scrollLeft = ref(0);
 const containerRef = ref(null);
 let autoplayInterval = null;
+let loadInterval = null;
 
 const totalItems = computed(() => galleryItems.length);
 
-// controla carregamento das imagens
+// Controle de quais índices tiveram o src definido (ativados)
+const activatedIndices = ref([]);
+
+// Controle de carregamento efetivo da imagem (load concluído)
 const loadedMap = ref({});
 
+// ========== MÉTODOS ==========
 const markLoaded = (id) => {
   loadedMap.value[id] = true;
 };
 
+// Avança para o próximo slide
 const nextSlide = () => {
   currentIndex.value = (currentIndex.value + 1) % totalItems.value;
   updateScrollPosition();
 };
 
+// Volta para o slide anterior
 const prevSlide = () => {
   currentIndex.value = (currentIndex.value - 1 + totalItems.value) % totalItems.value;
   updateScrollPosition();
@@ -30,45 +43,35 @@ const prevSlide = () => {
 
 const updateScrollPosition = () => {
   if (!containerRef.value) return;
-
   const container = containerRef.value;
   const itemWidth = container.children[0]?.offsetWidth || 0;
   const gap = 24;
-
   const scrollPosition = currentIndex.value * (itemWidth + gap);
-
-  container.scrollTo({
-    left: scrollPosition,
-    behavior: "smooth",
-  });
+  container.scrollTo({ left: scrollPosition, behavior: "smooth" });
 };
 
-// Drag
+// ========== DRAG ==========
 const handleDragStart = (e) => {
   isDragging.value = true;
   startX.value = e.pageX || e.touches[0].pageX;
   scrollLeft.value = containerRef.value.scrollLeft;
   stopAutoplay();
-
   e.preventDefault();
   containerRef.value.classList.add("dragging");
 };
 
 const handleDragMove = (e) => {
   if (!isDragging.value) return;
-
   e.preventDefault();
   const x = e.pageX || (e.touches && e.touches[0].pageX);
   if (!x) return;
-
   const walk = (x - startX.value) * 1.5;
   containerRef.value.scrollLeft = scrollLeft.value - walk;
 };
 
 const handleDragEnd = () => {
   isDragging.value = false;
-  containerRef.value.classList.remove("dragging");
-
+  containerRef.value?.classList.remove("dragging");
   if (containerRef.value) {
     const container = containerRef.value;
     const itemWidth = container.children[0]?.offsetWidth || 0;
@@ -77,7 +80,6 @@ const handleDragEnd = () => {
     const newIndex = Math.round(scrollPos / (itemWidth + gap));
     currentIndex.value = Math.max(0, Math.min(newIndex, totalItems.value - 1));
   }
-
   startAutoplay();
 };
 
@@ -85,13 +87,10 @@ const preventTextSelection = (e) => {
   if (isDragging.value) e.preventDefault();
 };
 
-// Autoplay
+// ========== AUTOPLAY ==========
 const startAutoplay = () => {
-  if (autoplayInterval) clearInterval(autoplayInterval);
-
-  autoplayInterval = setInterval(() => {
-    nextSlide();
-  }, 5000);
+  stopAutoplay();
+  autoplayInterval = setInterval(() => nextSlide(), 5000);
 };
 
 const stopAutoplay = () => {
@@ -101,7 +100,7 @@ const stopAutoplay = () => {
   }
 };
 
-// Atualiza índice pelo scroll
+// ========== SCROLL ==========
 const handleScroll = () => {
   if (containerRef.value && !isDragging.value) {
     const container = containerRef.value;
@@ -113,20 +112,66 @@ const handleScroll = () => {
   }
 };
 
+// ========== CARREGAMENTO PROGRESSIVO DAS IMAGENS ==========
+const activateInitialImages = () => {
+  // Ativa os primeiros PRIORITY_COUNT índices
+  activatedIndices.value = galleryItems
+    .slice(0, PRIORITY_COUNT)
+    .map((_, index) => index);
+};
+
+const loadRemainingImages = () => {
+  const total = galleryItems.length;
+  const activated = new Set(activatedIndices.value);
+  const toActivate = [];
+
+  for (let i = 0; i < total; i++) {
+    if (!activated.has(i)) toActivate.push(i);
+  }
+
+  if (toActivate.length === 0) return;
+
+  let currentBatch = 0;
+  loadInterval = setInterval(() => {
+    const batch = toActivate.slice(currentBatch, currentBatch + BATCH_SIZE);
+    if (batch.length === 0) {
+      clearInterval(loadInterval);
+      loadInterval = null;
+      return;
+    }
+
+    // Adiciona os novos índices ao array ativado
+    activatedIndices.value = [...activatedIndices.value, ...batch];
+    currentBatch += BATCH_SIZE;
+  }, BATCH_DELAY);
+};
+
+// ========== LIFECYCLE ==========
 onMounted(() => {
+  // 1. Ativa as imagens prioritárias
+  activateInitialImages();
+
+  // 2. Inicia autoplay e escuta scroll
   startAutoplay();
   if (containerRef.value) {
     containerRef.value.addEventListener("scroll", handleScroll);
   }
+
+  // 3. Agenda o carregamento do restante das imagens (após 2s)
+  setTimeout(() => {
+    loadRemainingImages();
+  }, 2000);
 });
 
 onUnmounted(() => {
   stopAutoplay();
+  if (loadInterval) clearInterval(loadInterval);
   if (containerRef.value) {
     containerRef.value.removeEventListener("scroll", handleScroll);
   }
 });
 </script>
+
 <template>
   <section id="galeria" class="gallery">
     <div class="container">
@@ -137,16 +182,10 @@ onUnmounted(() => {
             Ambientes reais transformados em sonhos realizados com marcenaria premium.
           </p>
         </div>
-
         <div class="gallery-controls">
-          <button @click="prevSlide" class="gallery-control prev" aria-label="Projeto anterior">
-            ‹
-          </button>
-          <button @click="nextSlide" class="gallery-control next" aria-label="Próximo projeto">
-            ›
-          </button>
+          <button @click="prevSlide" class="gallery-control prev" aria-label="Projeto anterior">‹</button>
+          <button @click="nextSlide" class="gallery-control next" aria-label="Próximo projeto">›</button>
         </div>
-        
       </div>
 
       <div class="gallery-carousel-container">
@@ -161,35 +200,36 @@ onUnmounted(() => {
           @touchmove="handleDragMove"
           @touchend="handleDragEnd"
           @selectstart="preventTextSelection"
-          @dragstart="(e) => e.preventDefault()"
+          @dragstart.prevent
         >
-          <div v-for="item in galleryItems" :key="item.id" class="gallery-item" @mousedown.prevent>
+          <div
+            v-for="(item, index) in galleryItems"
+            :key="item.id"
+            class="gallery-item"
+            @mousedown.prevent
+          >
             <div class="image-wrapper">
               <img
-                :src="item.image"
+                :src="activatedIndices.includes(index) ? item.image : null"
                 :alt="item.alt || `Projeto ${item.id}`"
-                loading="lazy"
                 draggable="false"
                 @load="markLoaded(item.id)"
                 :class="{ loaded: loadedMap[item.id] }"
               />
-
               <div v-if="!loadedMap[item.id]" class="image-skeleton"></div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="gallery-controls-bottom">
-          <button @click="prevSlide" class="gallery-control-bottom prev" aria-label="Projeto anterior">
-            ‹
-          </button>
-          <button @click="nextSlide" class="gallery-control-bottom next" aria-label="Próximo projeto">
-            ›
-          </button>
-        </div>
+        <button @click="prevSlide" class="gallery-control-bottom prev" aria-label="Projeto anterior">‹</button>
+        <button @click="nextSlide" class="gallery-control-bottom next" aria-label="Próximo projeto">›</button>
+      </div>
     </div>
   </section>
 </template>
+
 
 <style scoped>
 .gallery {

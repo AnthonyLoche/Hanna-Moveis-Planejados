@@ -5,20 +5,11 @@
   <header :class="{ dark: isDark }" class="header">
     <div class="container header-content">
       <div class="logo-container">
-        <img
-          src="../../assets/images/hanna.png"
-          alt="Hanna Móveis Logo" class="logo" />
+        <img src="../../assets/images/hanna.png" alt="Hanna Móveis Logo" class="logo" />
       </div>
-      <nav class="nav">
-        <a href="#inicio">Início</a>
-        <a href="#sobre">A Hanna</a>
-        <a href="#sustentabilidade">Ecológico</a>
-        <a href="#qualidades">Qualidades</a>
-        <a href="#galeria">Projetos</a>
-        <a href="#contato">Contato</a>
-      </nav>
+
       <div class="header-actions">
-        <a href="#contato" class="btn-primary btn-desktop">Quero Meu Orçamento Agora</a>
+        <a href="#contact-form-wrapper" class="btn-primary btn-desktop">Quero Meu Orçamento Agora</a>
       </div>
     </div>
   </header>

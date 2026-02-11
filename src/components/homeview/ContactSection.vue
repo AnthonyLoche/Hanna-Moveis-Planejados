@@ -83,7 +83,7 @@
             </a>
           </div>
         </div>
-        <div class="contact-form-wrapper">
+        <div class="contact-form-wrapper" id="contact-form-wrapper">
           <form @submit.prevent="enviarFormulario" class="contact-form">
             <div class="form-row">
               <div class="form-group">

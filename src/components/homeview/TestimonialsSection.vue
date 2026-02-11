@@ -22,7 +22,9 @@
             <div v-for="(testimonial, index) in shuffledTestimonials" :key="index" class="testimonial-card"
               :class="{ 'expanded': expandedCard === index }">
               <div class="testimonial-header">
-                <img :src="testimonial.picture" alt="Cozinha Planejada, Cozinha Sob Medida, Cozinha Modulada, Cozinha Alto Padrão, Dormitório Sob Medida, Dormitório Planejado, Dormitório Modulado, Dormitório Alto Padrão, Dormitório Sob Medida, Suíte Casal Sob Medida, Suíte Casal Planejada, Suíte Casal Modulada, Suíte Casal Alto Padrão, Dormitório Infantil Planejado, Dormitório Infantil Sob Medida, Dormitório Infantil Modulado, Dormitório Infantil Alto Padrão, Dormitório Casal Sob Medida, Dormitório Casal Planejado, Dormitório Casal Modulado, Dormitório Casal Alto Padrão." class="testimonial-avatar">
+                <img :src="testimonial.picture"
+                  alt="Cozinha Planejada, Cozinha Sob Medida, Cozinha Modulada, Cozinha Alto Padrão, Dormitório Sob Medida, Dormitório Planejado, Dormitório Modulado, Dormitório Alto Padrão, Dormitório Sob Medida, Suíte Casal Sob Medida, Suíte Casal Planejada, Suíte Casal Modulada, Suíte Casal Alto Padrão, Dormitório Infantil Planejado, Dormitório Infantil Sob Medida, Dormitório Infantil Modulado, Dormitório Infantil Alto Padrão, Dormitório Casal Sob Medida, Dormitório Casal Planejado, Dormitório Casal Modulado, Dormitório Casal Alto Padrão."
+                  class="testimonial-avatar">
                 <div>
                   <p class="testimonial-name">{{ testimonial.name }}</p>
                   <div class="rating-and-date">
@@ -57,7 +59,7 @@
       </div>
 
       <div class="testimonials-cta">
-        <a href="#contato" class="btn btn-accent">Quero Meu Orçamento Agora</a>
+        <a href="#contact-form-wrapper" class="btn btn-accent">Quero Meu Orçamento Agora</a>
       </div>
     </div>
   </section>

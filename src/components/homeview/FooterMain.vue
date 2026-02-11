@@ -14,17 +14,18 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-col">
-                    <img src="../../assets/images/hanna.png"
-                        alt="Logo" class="footer-logo" />
+                    <img src="../../assets/images/hanna.png" alt="Logo" class="footer-logo" />
                     <p class="footer-description">
                         Excelência em móveis planejados de alto padrão. Unimos o design contemporâneo à
                         consciência ambiental para transformar seu lar.
                     </p>
                     <div class="footer-social">
-                        <a href="https://www.facebook.com/hannamoveisplanejados" target="_blank" class="social-link" aria-label="Website">
+                        <a href="https://www.facebook.com/hannamoveisplanejados" target="_blank" class="social-link"
+                            aria-label="Website">
                             <Facebook :size="20" />
                         </a>
-                        <a href="https://www.instagram.com/hannamoveisplanejados/" target="_blank" class="social-link" aria-label="Instagram">
+                        <a href="https://www.instagram.com/hannamoveisplanejados/" target="_blank" class="social-link"
+                            aria-label="Instagram">
                             <Instagram :size="20" />
                         </a>
                         <a href="https://wa.me/5547991899212" target="_blank" class="social-link" aria-label="WhatsApp">
@@ -60,7 +61,7 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
                     <ul class="footer-schedule">
                         <li class="schedule-item">
                             <span>Segunda a Sexta</span>
-                            <strong>08h às 18h</strong>
+                            <strong>08:30h às 18:30h</strong>
                         </li>
                         <li class="schedule-item">
                             <span>Sábados</span>
@@ -79,7 +80,7 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
                         <li><a href="#sobre">Nossa História</a></li>
                         <li><a href="#sustentabilidade">Sustentabilidade</a></li>
                         <li><a href="#galeria">Projetos Executados</a></li>
-                        <li><a href="#contato">Solicitar Orçamento</a></li>
+                        <li><a href="#contact-form-wrapper">Solicitar Orçamento</a></li>
                     </ul>
                 </div>
             </div>
@@ -89,7 +90,8 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
                     <span class="separator">|</span>
                     <span>TODOS OS DIREITOS RESERVADOS</span>
                     <span class="separator">|</span>
-                    <span>Feito e Desenvolvido por: <a href="https://my-portfolio-anthonygabriel.vercel.app/" class="link" target="_blank"> Anthony Gabriel</a></span>
+                    <span>Feito e Desenvolvido por: <a href="https://my-portfolio-anthonygabriel.vercel.app/"
+                            class="link" target="_blank"> Anthony Gabriel</a></span>
                 </div>
                 <div class="footer-brand">
                     <strong>UMA MARCA DURAN GROUP</strong>
@@ -108,7 +110,7 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
     color: #292929;
 }
 
-.link{
+.link {
     text-decoration: none;
     color: #e3350d;
     font-weight: 600;
@@ -474,9 +476,10 @@ import Facebook from 'vue-material-design-icons/Facebook.vue';
     color: #999;
     border-top-color: #333;
 }
-span{
-  display: flex;
-  justify-content: center;
-  align-items: center;
+
+span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

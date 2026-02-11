@@ -40,53 +40,38 @@ onUnmounted(() => {
   <section id="inicio" class="hero">
     <!-- Container para as imagens de background -->
     <div class="hero-backgrounds">
-      <div 
-        v-for="(image, index) in images" 
-        :key="index"
+      <div v-for="(image, index) in images" :key="index"
         :class="['hero-bg-image', { active: currentImageIndex === index }]"
-        :style="{ backgroundImage: `url(${image})` }"
-      ></div>
+        :style="{ backgroundImage: `url(${image})` }"></div>
     </div>
-    
+
     <div class="container">
       <div class="hero-content">
         <h1 class="hero-title">
-          Sua felicidade <br /><div class="highlight">nos motiva!</div>
+          Sua felicidade <br />
+          <div class="highlight">nos motiva!</div>
         </h1>
         <p class="hero-text">
           Móveis planejados que unem o requinte do design contemporâneo à consciência ecológica.
           Qualidade garantida pelo Duran Group para transformar seu lar.
         </p>
-        
+
         <div class="hero-buttons">
-          <a href="#contato" class="btn-primary">Quero Meu Orçamento Agora</a>
+          <a href="#contact-form-wrapper" class="btn-primary">Quero Meu Orçamento Agora</a>
           <a href="#sobre" class="btn-secondary">Conheça nossa história</a>
         </div>
 
         <!-- Ícones de redes sociais -->
         <div class="hero-social-icons">
-          <a 
-            href="https://www.facebook.com/hannamoveisplanejados" 
-            target="_blank" 
-            class="social-icon"
-            aria-label="Facebook"
-          >
+          <a href="https://www.facebook.com/hannamoveisplanejados" target="_blank" class="social-icon"
+            aria-label="Facebook">
             <Facebook :size="24" />
           </a>
-          <a 
-            href="https://www.instagram.com/hannamoveisplanejados/" 
-            target="_blank" 
-            class="social-icon"
-            aria-label="Instagram"
-          >
+          <a href="https://www.instagram.com/hannamoveisplanejados/" target="_blank" class="social-icon"
+            aria-label="Instagram">
             <Instagram :size="24" />
           </a>
-          <a 
-            href="https://wa.me/5547991899212" 
-            target="_blank" 
-            class="social-icon"
-            aria-label="WhatsApp"
-          >
+          <a href="https://wa.me/5547991899212" target="_blank" class="social-icon" aria-label="WhatsApp">
             <Whatsapp :size="24" />
           </a>
         </div>
@@ -145,22 +130,18 @@ onUnmounted(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.7) 0%,
-    rgba(255, 255, 255, 0.5) 50%,
-    rgba(255, 255, 255, 0.3) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0.3) 100%);
   z-index: 1;
 }
 
 .dark .hero-backgrounds::after {
-  background: linear-gradient(
-    to bottom,
-    rgba(18, 18, 18, 0.8) 0%,
-    rgba(18, 18, 18, 0.6) 50%,
-    rgba(18, 18, 18, 0.4) 100%
-  );
+  background: linear-gradient(to bottom,
+      rgba(18, 18, 18, 0.8) 0%,
+      rgba(18, 18, 18, 0.6) 50%,
+      rgba(18, 18, 18, 0.4) 100%);
 }
 
 .hero-content {
@@ -344,7 +325,7 @@ onUnmounted(() => {
   transition: all 0.3s;
 }
 
-span{
+span {
   display: flex;
   align-items: center;
   justify-content: center;
